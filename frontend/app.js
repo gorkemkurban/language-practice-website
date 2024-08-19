@@ -4,13 +4,13 @@ document.getElementById('chatForm').addEventListener('submit', async function(ev
     const userInput = document.getElementById('userInput').value;
     const messages = document.getElementById('messages');
 
-    // Kullanıcı mesajını ekleyin
+    // Kullanıcı mesajı girer
     const userMessage = document.createElement('div');
     userMessage.className = 'message user';
     userMessage.textContent = userInput;
     messages.appendChild(userMessage);
 
-    // Chatbot cevabını almak için sunucuya istek gönderin
+    // Sunucuya istek
     try {
         const response = await fetch('http://localhost:3000/generate', {
             method: 'POST',
@@ -26,20 +26,19 @@ document.getElementById('chatForm').addEventListener('submit', async function(ev
 
         const data = await response.json();
 
-        // Bot cevabını ekleyin
+        // Cevabı ekle
         const botMessage = document.createElement('div');
         botMessage.className = 'message bot';
         botMessage.textContent = data.text;
         messages.appendChild(botMessage);
 
-        // Mesaj kutusunu temizleyin
+        // Kutu temizle
         document.getElementById('userInput').value = '';
 
-        // Son mesajı görünür yapın
+        // Mesaj göster
         messages.scrollTop = messages.scrollHeight;
 
     } catch (error) {
         console.error('Hata:', error);
-        // Hata mesajı gösterebilirsiniz
     }
 });

@@ -19,10 +19,10 @@ const limiter = rateLimit({
 });
 app.use('/generate', limiter);
 
-// Yapılandırma dosyasını yükle
+// systemInstructionları çek
 const instructions = JSON.parse(fs.readFileSync('systemInstructions.json', 'utf8'));
 
-// Varsayılan bir talimat seçici
+// talimatı atama
 let currentInstruction = instructions.instruction_english;
 
 const model = new GoogleGenerativeAI(process.env.API_KEY).getGenerativeModel({
@@ -71,10 +71,10 @@ app.post('/generate', async (req, res) => {
         return res.status(400).send('Prompt gerekli.');
     }
 
-    // Dinamik olarak talimatları güncelle
+    // talimatları güncelle
     if (instructionKey && instructions[instructionKey]) {
         currentInstruction = instructions[instructionKey];
-        model.setSystemInstruction(currentInstruction); // API'de dinamik güncelleme sağlanabilir mi kontrol et
+        model.setSystemInstruction(currentInstruction); // dinamik güncelleme sağlanır mı kontrol et
     }
 
     prompt = cleanInput(prompt);
