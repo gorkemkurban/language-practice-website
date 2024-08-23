@@ -1,0 +1,64 @@
+.character-selection-container {
+  text-align: center;
+  padding: 20px;
+  background-color: #f0f0f0;
+  height: auto; /* Sabit yükseklik yerine otomatik yapıldı */
+  width: 80vh; /* Sabit genişlik yerine yüzde olarak ayarlandı */
+  max-width: 600px; /* Maksimum genişlik ayarlandı */
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; /* İçeriği merkezle */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Hafif bir gölge eklendi */
+}
+
+.character-selection-buttons {
+  display: flex; /* Flexbox kullanarak yatay hizalama */
+  gap: 10px; /* Butonlar arasında boşluk bırakma */
+  flex-wrap: wrap; /* Ekran daraldığında butonların alt satıra geçmesine izin ver */
+  justify-content: center; /* Butonları yatayda ortala */
+}
+
+.character-selection-container button {
+  margin: 0; /* Butonların margin'ini sıfırla */
+  padding: 12px 24px;
+  font-size: 16px;
+  background-color: #1e293b;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: auto; /* Buton genişliğini otomatik yap */
+  max-width: 200px;
+}
+
+.character-selection-container button:hover {
+  background-color: #334155;
+}
+
+/* Medya sorguları ekleyerek responsive tasarımı iyileştirin */
+@media (max-width: 768px) {
+  .character-selection-container {
+    width: 90%; /* Daha küçük ekranlarda genişliği artır */
+    padding: 15px; /* Daha küçük ekranlarda padding'i azalt */
+  }
+
+  .character-selection-container button {
+    padding: 10px 20px; /* Daha küçük ekranlar için buton padding'ini azalt */
+    font-size: 14px; /* Daha küçük ekranlar için font boyutunu azalt */
+  }
+}
+
+@media (max-width: 480px) {
+  .character-selection-container {
+    width: 100%; /* En küçük ekranlarda genişliği %100 yap */
+    padding: 10px; /* En küçük ekranlar için padding'i azalt */
+  }
+
+  .character-selection-container button {
+    padding: 8px 16px; /* En küçük ekranlar için buton padding'ini daha da azalt */
+    font-size: 12px; /* En küçük ekranlar için font boyutunu daha da azalt */
+  }
+}

@@ -1,0 +1,63 @@
+.language-selection-container {
+  text-align: center;
+  padding: 20px;
+  background-color: #fff;
+  height: auto;
+  width: 80vh;
+  max-width: 600px;
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.language-selection-buttons {
+  display: flex; /* Flexbox kullanarak yatay hizalama */
+  gap: 10px; /* Butonlar arasında boşluk bırakma */
+  flex-wrap: wrap; /* Ekran daraldığında butonların alt satıra geçmesine izin ver */
+  justify-content: center; /* Butonları yatayda ortala */
+}
+
+.language-selection-container button {
+  margin: 0; /* Butonların margin'ini sıfırla */
+  padding: 12px 24px;
+  font-size: 16px;
+  background-color: #1e293b;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: auto; /* Buton genişliğini otomatik yap */
+  max-width: 200px;
+}
+
+.language-selection-container button:hover {
+  background-color: #334155;
+}
+
+@media (max-width: 768px) {
+  .language-selection-container {
+    width: 90%;
+    padding: 15px;
+  }
+
+  .language-selection-container button {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .language-selection-container {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .language-selection-container button {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+}

@@ -12,10 +12,12 @@ const LanguageSelection = () => {
   return (
     <div className="language-selection-container">
       <h2>Select a Language</h2>
-      <button onClick={() => handleLanguageSelection('English')}>English</button>
-      <button onClick={() => handleLanguageSelection('French')}>French</button>
-      <button onClick={() => handleLanguageSelection('Turkish')}>Turkish</button>
-      {/* Diğer diller buraya eklenebilir */}
+      <div className="language-selection-buttons">
+        <button onClick={() => handleLanguageSelection('English')}>English</button>
+        <button onClick={() => handleLanguageSelection('French')}>French</button>
+        <button onClick={() => handleLanguageSelection('Turkish')}>Turkish</button>
+        {/* Diğer diller buraya eklenebilir */}
+      </div>
     </div>
   );
 };
