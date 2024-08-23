@@ -38,7 +38,7 @@ body {
 .messages {
     flex: 1;
     padding: 10px;
-    overflow-y: auto; /* Kaydırma çubuğunu aktif hale getirir */
+    overflow-y: auto; 
     border-bottom: 1px solid #ccc;
 }
 

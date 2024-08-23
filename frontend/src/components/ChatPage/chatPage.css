@@ -1,0 +1,112 @@
+/* Genel stil */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1e293b;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* ChatBot konteyneri */
+.chatbot-container {
+    width: 100vw; /* Ekran genişliğinin %100'ı */
+    max-width: 1920px; /* Maksimum genişlik */
+    height: 100vh; /* Ekran yüksekliğinin %100'ı */
+    max-height: 1080px; /* Maksimum yükseklik */
+    background-color: #1e293b;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Üst menü stili */
+.chatbot-header {
+    background-color: #334155;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+}
+
+/* Buton ve başlık stilleri */
+.back-button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.chatbot-title {
+    color: #fff;
+    margin-left: 10px;
+    font-size: 18px;
+}
+
+/* Mesaj alanı stili */
+.chatbot-messages {
+    flex-grow: 1;
+    padding: 15px;
+    background-color: #0f172a;
+    overflow-y: auto;
+}
+
+/* Mesaj gönderme alanı stili */
+.chatbot-input-container {
+    display: flex;
+    align-items: center;
+    background-color: #0f172a;
+    padding: 10px;
+}
+
+/* Girdi ve buton stilleri */
+.chatbot-input {
+    flex-grow: 1;
+    padding: 8px;
+    border: solid;
+    border-color: #0f172a;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #334155;
+    color: #fff;
+}
+
+.send-button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    margin-left: 10px;
+    cursor: not-allowed; /* Başlangıçta tıklanamaz göstermek için */
+    opacity: 0.5; /* Soluk görünüm */
+}
+
+.send-button.active {
+    cursor: pointer; /* Aktif durumda tıklanabilir gösterir */
+    opacity: 1; /* Normal görünüm */
+}
+
+/* Mesaj stilleri */
+.user-message {
+    text-align: right;
+    color: #fff;
+    margin: 5px;
+    background-color: #3b82f6;
+    padding: 8px;
+    border-radius: 10px;
+}
+
+.bot-message {
+    text-align: left;
+    color: #fff;
+    margin: 5px;
+    background-color: #1e293b;
+    padding: 8px;
+    border-radius: 10px;
+}

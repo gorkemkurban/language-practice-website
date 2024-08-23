@@ -1,0 +1,25 @@
+.language-selection-container {
+    text-align: center;
+    padding: 20px;
+    background-color: #f0f0f0;
+    height: 50vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .language-selection-container button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #1e293b;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .language-selection-container button:hover {
+    background-color: #334155;
+  }
+  

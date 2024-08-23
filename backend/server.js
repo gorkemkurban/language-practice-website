@@ -22,13 +22,14 @@ app.use('/generate', limiter);
 // systemInstructionları çek
 const instructions = JSON.parse(fs.readFileSync('systemInstructions.json', 'utf8'));
 
-// talimatı atama
-let currentInstruction = instructions.instruction_english;
+const modelInstance = (systemInstruction) => {
+    return new GoogleGenerativeAI(process.env.API_KEY).getGenerativeModel({
+        model: "gemini-1.5-flash",
+        systemInstruction: systemInstruction
+    });
+};
 
-const model = new GoogleGenerativeAI(process.env.API_KEY).getGenerativeModel({
-    model: "gemini-1.5-flash",
-    systemInstruction: currentInstruction
-});
+let model = modelInstance(instructions.instruction_english);
 
 function cleanInput(input) {
     return input.replace(/(.)\1+/g, '$1').replace(/\s+/g, ' ').trim();
@@ -73,8 +74,7 @@ app.post('/generate', async (req, res) => {
 
     // talimatları güncelle
     if (instructionKey && instructions[instructionKey]) {
-        currentInstruction = instructions[instructionKey];
-        model.setSystemInstruction(currentInstruction); // dinamik güncelleme sağlanır mı kontrol et
+        model = modelInstance(instructions[instructionKey]);
     }
 
     prompt = cleanInput(prompt);
