@@ -19,7 +19,6 @@ const limiter = rateLimit({
 });
 app.use('/generate', limiter);
 
-// systemInstructionları çek
 const instructions = JSON.parse(fs.readFileSync('systemInstructions.json', 'utf8'));
 
 const modelInstance = (systemInstruction) => {
@@ -32,14 +31,11 @@ const modelInstance = (systemInstruction) => {
 let model = modelInstance(instructions.instruction_english);
 
 function cleanInput(input) {
-    return input.replace(/(.)\1+/g, '$1').replace(/\s+/g, ' ').trim();
+    return input ? input.replace(/(.)\1+/g, '$1').replace(/\s+/g, ' ').trim() : '';
 }
 
 function simplifyInput(input) {
-    if (input.length > 200) {
-        input = input.substring(0, 200) + '...';
-    }
-    return input;
+    return input.length > 200 ? input.substring(0, 200) + '...' : input;
 }
 
 function delay(ms) {
@@ -66,19 +62,48 @@ async function makeRequestWithRetry(prompt, retries = 3) {
 }
 
 app.post('/generate', async (req, res) => {
-    let { prompt, instructionKey } = req.body;
+    const { language, character, prompt } = req.body;
 
-    if (!prompt) {
-        return res.status(400).send('Prompt gerekli.');
+    if (!language || !prompt) {
+        return res.status(400).send('Geçersiz veya eksik veri.');
     }
 
-    // talimatları güncelle
-    if (instructionKey && instructions[instructionKey]) {
-        model = modelInstance(instructions[instructionKey]);
+    // Talimatları güncelle
+    switch (language) {
+        case 'French':
+            switch (character) {
+                case 'Teacher':
+                    model = modelInstance(instructions.instruction_french_teacher);
+                    break;
+                case 'Doctor':
+                    model = modelInstance(instructions.instruction_french_doctor);
+                    break;
+            }
+            break;
+        case 'Turkish':
+            switch (character) {
+                case 'Teacher':
+                    model = modelInstance(instructions.instruction_turkish_teacher);
+                    break;
+                case 'Doctor':
+                    model = modelInstance(instructions.instruction_turkish_doctor);
+                    break;
+            }
+            break;
+        case 'English':
+            switch (character) {
+                case 'Teacher':
+                    model = modelInstance(instructions.instruction_english_teacher);
+                    break;
+                case 'Doctor':
+                    model = modelInstance(instructions.instruction_english_doctor);
+                    break;
+            }
+            break;
+        default:
+            model = modelInstance(instructions.instruction_default);
+            break;
     }
-
-    prompt = cleanInput(prompt);
-    prompt = simplifyInput(prompt);
 
     try {
         const text = await makeRequestWithRetry(prompt);

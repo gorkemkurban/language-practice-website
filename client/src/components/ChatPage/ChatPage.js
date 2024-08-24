@@ -1,11 +1,21 @@
 // src/components/Chatbot.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './chatPage.css'; // CSS dosyasını import edin
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const Chatbot = () => {
   const [inputValue, setInputValue] = useState('');
   const [messages, setMessages] = useState([]);
+  const [language, setLanguage] = useState('');
+  const [character, setCharacter] = useState('');
+
+  const location = useLocation();
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    setLanguage(queryParams.get('language') || 'English');
+    setCharacter(queryParams.get('character') || 'Teacher');
+  }, [location.search]);
 
   const sendMessage = async () => {
     if (inputValue.trim() === '') return;
@@ -23,7 +33,8 @@ const Chatbot = () => {
         },
         body: JSON.stringify({
           prompt: inputValue,
-          instructionKey: 'instruction_english',
+          language: language, // Dil bilgisini ekleyin
+          character: character, // Karakter bilgisini ekleyin
         }),
       });
 
@@ -56,7 +67,7 @@ const Chatbot = () => {
     <div className="chatbot-container">
       <div className="chatbot-header">
         <Link to="/" className="back-button">←</Link>
-        <h2 className="chatbot-title">English Teacher</h2>
+        <h2 className="chatbot-title">{character}</h2>
       </div>
       <div className="chatbot-messages">
         {messages.map((msg, index) => (
