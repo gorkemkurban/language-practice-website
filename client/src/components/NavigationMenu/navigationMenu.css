@@ -1,0 +1,59 @@
+.navigation-menu {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    background-color: #0f172a;
+    padding: 10px 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000; /* Menü arka planı üstte tutmak için */
+}
+
+.navigation-menu ul {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.navigation-menu ul li {
+    margin-right: 20px;
+}
+
+.navigation-menu ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.2rem;
+    display: block; /* Tıklanabilir alanı genişletir */
+    padding: 10px 20px;
+}
+
+.left-menu li {
+    font-size: 1.2rem;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.left-menu li:hover, .left-menu li a:hover {
+    background-color: #2563eb;
+    border-radius: 10px;
+}
+
+.right-menu li {
+    border: none;
+    cursor: pointer;
+}
+
+.right-menu li:hover {
+    background-color: #2563eb;
+    border-radius: 10px;
+}
+
+.user-icon {
+    font-size: 1.2rem;
+    vertical-align: middle;
+}
