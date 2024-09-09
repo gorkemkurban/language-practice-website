@@ -11,7 +11,7 @@ const LanguageSelection = () => {
 
   return (
     <div className="language-selection-container">
-      <h2>Select a Language</h2>
+      <h2 className='header-color'>Select a Language</h2>
       <div className="language-selection-buttons">
         <button onClick={() => handleLanguageSelection('English')}>English</button>
         <button onClick={() => handleLanguageSelection('French')}>French</button>

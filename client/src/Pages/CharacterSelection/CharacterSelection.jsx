@@ -14,7 +14,7 @@ const CharacterSelection = () => {
 
   return (
     <div className="character-selection-container">
-      <h2>Select a Character</h2>
+      <h2 className='header-color'>Select a Character</h2>
       <div className="character-selection-buttons">
         <button onClick={() => handleCharacterSelection('Doctor')}>Doctor</button>
         <button onClick={() => handleCharacterSelection('Teacher')}>Teacher</button>

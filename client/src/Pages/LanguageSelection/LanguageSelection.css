@@ -14,6 +14,10 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.header-color{
+  color:black;
+}
+
 .language-selection-buttons {
   display: flex; /* Flexbox kullanarak yatay hizalama */
   gap: 10px; /* Butonlar arasında boşluk bırakma */

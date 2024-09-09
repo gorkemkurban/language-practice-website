@@ -1,14 +1,14 @@
 // App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import HomePage from './components/HomePage/HomePage';
-import LanguageSelection from './components/LanguageSelection/LanguageSelection';
-import CharacterSelection from './components/CharacterSelection/CharacterSelection';
-import Chatbot from './components/ChatPage/ChatPage';
+import HomePage from './Pages/HomePage/HomePage';
+import LanguageSelection from './Pages/LanguageSelection/LanguageSelection';
+import CharacterSelection from './Pages/CharacterSelection/CharacterSelection';
+import Chatbot from './Pages/ChatPage/ChatPage';
 import NavigationMenu from './components/NavigationMenu/NavigationMenu'; 
-import LoginSignupPage from './components/LoginSignupPage/LoginSignupPage';
-import Pricing from './components/Pricing/Pricing';
-import About from './components/About/About';
+import LoginSignupPage from './Pages/LoginSignupPage/LoginSignupPage';
+import Pricing from './Pages/Pricing/Pricing';
+import About from './Pages/About/About';
 
 const Layout = ({ children }) => {
   const location = useLocation();
