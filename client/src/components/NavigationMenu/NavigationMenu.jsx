@@ -10,7 +10,7 @@ const NavigationMenu = () => {
       <ul className="left-menu">
         <li><Link to="/">Home Page</Link></li>
         <li><Link to="/pricing">Pricing</Link></li>
-        <li><Link to="/about">About</Link></li>
+        <li><Link to="/learn">Learn</Link></li>
         <li><Link to="/chatpage">Chat Page</Link></li>
       </ul>
       <ul className="right-menu">

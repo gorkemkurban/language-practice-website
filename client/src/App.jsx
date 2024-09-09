@@ -9,6 +9,7 @@ import NavigationMenu from './components/NavigationMenu/NavigationMenu';
 import LoginSignupPage from './Pages/LoginSignupPage/LoginSignupPage';
 import Pricing from './Pages/Pricing/Pricing';
 import About from './Pages/About/About';
+import Learn from './Pages/Learn/Learn';
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -33,6 +34,7 @@ const App = () => {
         <Route path='/login-singup' element={<Layout><LoginSignupPage /></Layout>} />
         <Route path='/pricing' element={<Layout><Pricing /></Layout>} />
         <Route path='/about' element={<Layout><About /></Layout>} />
+        <Route path='/learn' element={<Layout><Learn /></Layout>} />
       </Routes>
     </Router>
   );
