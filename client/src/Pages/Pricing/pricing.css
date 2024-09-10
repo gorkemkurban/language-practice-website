@@ -1,8 +1,9 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+body{
+    background-color: #1e293b;
+    color: #fff;
+    font-family: 'Roboto', sans-serif;
 }
+
 h2, h3, p{
     color: #fff;
     text-align: center;
@@ -24,7 +25,7 @@ h2, h3, p{
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    background-color: #172033;
+    background-color: white;
     border-radius: 10px;
     padding: 10px;
     margin-top: 40px;

@@ -19,10 +19,10 @@
 }
 
 .language-selection-buttons {
-  display: flex; /* Flexbox kullanarak yatay hizalama */
-  gap: 10px; /* Butonlar arasında boşluk bırakma */
-  flex-wrap: wrap; /* Ekran daraldığında butonların alt satıra geçmesine izin ver */
-  justify-content: center; /* Butonları yatayda ortala */
+  display: flex; 
+  gap: 10px; 
+  flex-wrap: wrap; 
+  justify-content: center; 
 }
 
 .language-selection-container button {

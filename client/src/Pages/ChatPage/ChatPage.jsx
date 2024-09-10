@@ -85,12 +85,15 @@ const Chatbot = () => {
           onKeyPress={handleKeyPress}
           placeholder="Type Here..."
         />
+        <button className="microphone-button">
+        <i className="fas fa-microphone"></i>
+        </button>
         <button
           className={`send-button ${inputValue.trim() ? 'active' : ''}`}
           onClick={sendMessage}
           disabled={!inputValue.trim()}
         >
-          ➤
+          <i class="fa-solid fa-caret-right"></i>
         </button>
       </div>
     </div>
