@@ -50,6 +50,19 @@
     padding: 10px;
 }
 
+.chatbot-input-container.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.chatbot-input-container.disabled .chatbot-input,
+.chatbot-input-container.disabled .microphone-button,
+.chatbot-input-container.disabled .send-button {
+    background-color: #ccc;
+    color: #888;
+    cursor: not-allowed;
+}
+
 .chatbot-input {
     width: 96%;
     flex-grow: 1;
@@ -153,3 +166,5 @@
     border-color: transparent #334155 transparent transparent;
     transform: translateY(-50%);
 }
+
+

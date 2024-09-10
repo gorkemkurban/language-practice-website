@@ -1,3 +1,12 @@
+/* Parent container için gerekli düzenleme */
+body, html {
+  height: 100%; /* Ekranın tamamını kaplasın */
+  margin: 0; /* Varsayılan marjinleri sıfırlayın */
+  display: flex;
+  justify-content: center; /* Yatayda ortala */
+  align-items: center; /* Dikeyde ortala */
+}
+
 .language-selection-container {
   text-align: center;
   padding: 20px;
@@ -14,19 +23,19 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.header-color{
-  color:black;
+.header-color {
+  color: black;
 }
 
 .language-selection-buttons {
   display: flex; 
   gap: 10px; 
   flex-wrap: wrap; 
-  justify-content: center; 
+  justify-content: center;
 }
 
 .language-selection-container button {
-  margin: 0; /* Butonların margin'ini sıfırla */
+  margin: 0;
   padding: 12px 24px;
   font-size: 16px;
   background-color: #1e293b;
@@ -34,7 +43,7 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  width: auto; /* Buton genişliğini otomatik yap */
+  width: auto;
   max-width: 200px;
 }
 
@@ -42,6 +51,7 @@
   background-color: #334155;
 }
 
+/* Mobil uyumluluk için medya sorguları */
 @media (max-width: 768px) {
   .language-selection-container {
     width: 90%;

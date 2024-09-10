@@ -25,10 +25,14 @@ h2, h3, p{
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    background-color: white;
+    background-color: #172033;
     border-radius: 10px;
     padding: 10px;
     margin-top: 40px;
+    width: 800px;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
 }
 .pricing-card{
     background: #333;
@@ -76,7 +80,7 @@ h2, h3, p{
 }
 
 .pricing-card button{
-    background-color: #172033;
+    background-color: #3b82f6;
     color: #fff;
     border: none;
     padding: 10px 20px;

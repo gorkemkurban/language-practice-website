@@ -1,6 +1,5 @@
-// src/components/Chatbot.js
-import React, { useState, useEffect } from 'react';
-import './chatPage.css'; // CSS dosyasını import edin
+import React, { useState, useEffect, useRef } from 'react';
+import './chatPage.css';
 import { Link, useLocation } from 'react-router-dom';
 
 const Chatbot = () => {
@@ -8,8 +7,12 @@ const Chatbot = () => {
   const [messages, setMessages] = useState([]);
   const [language, setLanguage] = useState('');
   const [character, setCharacter] = useState('');
+  const [botTypingMessage, setBotTypingMessage] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const location = useLocation();
+  const messagesEndRef = useRef(null); // Mesaj kutusuna referans
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -17,12 +20,17 @@ const Chatbot = () => {
     setCharacter(queryParams.get('character') || 'Teacher');
   }, [location.search]);
 
-  const sendMessage = async () => {
-    if (inputValue.trim() === '') return;
+  useEffect(() => {
+    // Mesaj kutusunun sonuna kaydır
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
-    // Kullanıcı mesajını ekleyin
+  const sendMessage = async () => {
+    if (inputValue.trim() === '' || isTyping || isDisabled) return;
+
     setMessages((prevMessages) => [...prevMessages, { text: inputValue, type: 'user' }]);
     setInputValue('');
+    setIsDisabled(true);
 
     try {
       // API'ye istek gönder
@@ -33,21 +41,40 @@ const Chatbot = () => {
         },
         body: JSON.stringify({
           prompt: inputValue,
-          language: language, // Dil bilgisini ekleyin
-          character: character, // Karakter bilgisini ekleyin
+          language: language,
+          character: character,
         }),
       });
 
       if (!response.ok) throw new Error('Bir hata oluştu.');
 
       const data = await response.json();
-      
-      // Bot yanıtını ekleyin
-      setMessages((prevMessages) => [...prevMessages, { text: data.text, type: 'bot' }]);
 
+      displayBotMessage(data.text);
     } catch (error) {
       console.error('API Hatası:', error);
     }
+  };
+
+  const displayBotMessage = (message) => {
+    setIsTyping(true);
+    setBotTypingMessage('');
+
+    let index = 0;
+    setBotTypingMessage(message[index]);
+    index++;
+
+    const interval = setInterval(() => {
+      if (index < message.length) {
+        setBotTypingMessage((prev) => prev + message[index]);
+        index++;
+      } else {
+        clearInterval(interval);
+        setMessages((prevMessages) => [...prevMessages, { text: message, type: 'bot' }]);
+        setIsTyping(false);
+        setIsDisabled(false);
+      }
+    }, 15);
   };
 
   const handleInputChange = (event) => {
@@ -75,8 +102,14 @@ const Chatbot = () => {
             {msg.text}
           </div>
         ))}
+        {isTyping && (
+          <div className="bot-message">
+            {botTypingMessage}
+          </div>
+        )}
+        <div ref={messagesEndRef} /> {/* Mesaj kutusunun sonuna referans */}
       </div>
-      <div className="chatbot-input-container">
+      <div className={`chatbot-input-container ${isDisabled ? 'disabled' : ''}`}>
         <input
           type="text"
           className="chatbot-input"
@@ -84,16 +117,17 @@ const Chatbot = () => {
           onChange={handleInputChange}
           onKeyPress={handleKeyPress}
           placeholder="Type Here..."
+          disabled={isDisabled}
         />
-        <button className="microphone-button">
-        <i className="fas fa-microphone"></i>
+        <button className="microphone-button" disabled={isDisabled}>
+          <i className="fas fa-microphone"></i>
         </button>
         <button
           className={`send-button ${inputValue.trim() ? 'active' : ''}`}
           onClick={sendMessage}
-          disabled={!inputValue.trim()}
+          disabled={!inputValue.trim() || isDisabled}
         >
-          <i class="fa-solid fa-caret-right"></i>
+          <i className="fa-solid fa-caret-right"></i>
         </button>
       </div>
     </div>
