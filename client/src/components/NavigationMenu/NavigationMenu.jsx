@@ -11,6 +11,7 @@ const NavigationMenu = () => {
         <li><Link to="/">Home Page</Link></li>
         <li><Link to="/pricing">Pricing</Link></li>
         <li><Link to="/learn">Learn</Link></li>
+        <li><Link to="/chatpage">Chat Page</Link></li>
       </ul>
       <ul className="right-menu">
         <li>
