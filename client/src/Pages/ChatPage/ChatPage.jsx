@@ -25,6 +25,12 @@ const Chatbot = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // HTML etiketlerini temizleme fonksiyonu
+  const stripHtmlTags = (text) => {
+    const doc = new DOMParser().parseFromString(text, 'text/html');
+    return doc.body.textContent || "";
+  };
+
   const sendMessage = async () => {
     if (inputValue.trim() === '' || isTyping || isDisabled) return;
 
@@ -60,17 +66,19 @@ const Chatbot = () => {
     setIsTyping(true);
     setBotTypingMessage('');
 
+    const cleanMessage = stripHtmlTags(message); // HTML etiketlerini temizle
+
     let index = 0;
-    setBotTypingMessage(message[index]);
+    setBotTypingMessage(cleanMessage[index]);
     index++;
 
     const interval = setInterval(() => {
-      if (index < message.length) {
-        setBotTypingMessage((prev) => prev + message[index]);
+      if (index < cleanMessage.length) {
+        setBotTypingMessage((prev) => prev + cleanMessage[index]);
         index++;
       } else {
         clearInterval(interval);
-        setMessages((prevMessages) => [...prevMessages, { text: message, type: 'bot' }]);
+        setMessages((prevMessages) => [...prevMessages, { text: cleanMessage, type: 'bot' }]);
         setIsTyping(false);
         setIsDisabled(false);
       }

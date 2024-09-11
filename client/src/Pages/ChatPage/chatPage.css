@@ -143,6 +143,12 @@
     position: relative;
     display: inline-block;
     padding: 12px;
+    white-space: pre-line;
+}
+
+.bot-message,
+.user-message{
+    white-space: pre-line;
 }
 
 .user-message::after {

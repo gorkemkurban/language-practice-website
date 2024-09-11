@@ -21,10 +21,19 @@ app.use('/generate', limiter);
 
 const instructions = JSON.parse(fs.readFileSync('systemInstructions.json', 'utf8'));
 
+const generationConfig = {
+    temperature: 1,
+    topP: 0.95,
+    topK: 64,
+    maxOutputTokens: 8192,
+    responseMimeType: "text/plain",
+};
+
 const modelInstance = (systemInstruction) => {
     return new GoogleGenerativeAI(process.env.API_KEY).getGenerativeModel({
         model: "gemini-1.5-flash",
-        systemInstruction: systemInstruction
+        systemInstruction: systemInstruction,
+        generationConfig: generationConfig,
     });
 };
 
