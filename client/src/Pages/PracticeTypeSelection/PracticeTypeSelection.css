@@ -1,0 +1,77 @@
+/* Parent container için gerekli düzenleme */
+body, html {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.practice-type-selection-container {
+  text-align: center;
+  padding: 20px;
+  background-color: #fff;
+  height: auto;
+  width: 80vh;
+  max-width: 600px;
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header-color {
+  color: black;
+}
+
+.practice-type-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.practice-type-selection-container button {
+  margin: 0;
+  padding: 12px 24px;
+  font-size: 16px;
+  background-color: #1e293b;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: auto;
+  max-width: 200px;
+}
+
+.practice-type-selection-container button:hover {
+  background-color: #334155;
+}
+
+/* Mobil uyumluluk için medya sorguları */
+@media (max-width: 768px) {
+  .practice-type-selection-container {
+    width: 90%;
+    padding: 15px;
+  }
+
+  .practice-type-selection-container button {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .practice-type-selection-container {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .practice-type-selection-container button {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+}

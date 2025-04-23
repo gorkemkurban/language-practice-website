@@ -11,6 +11,8 @@ import LoginSignupPage from './Pages/LoginSignupPage/LoginSignupPage';
 import Pricing from './Pages/Pricing/Pricing';
 import About from './Pages/About/About';
 import Learn from './Pages/Learn/Learn';
+import Speech from './Pages/SpeechPage/speechPage';
+import PracticeTypeSelection from './Pages/PracticeTypeSelection/PracticeTypeSelection';
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -31,11 +33,13 @@ const App = () => {
         <Route path="/" element={<Layout><HomePage /></Layout>} />
         <Route path="/language-selection" element={<Layout><LanguageSelection /></Layout>} />
         <Route path="/character-selection" element={<Layout><CharacterSelection /></Layout>} />
+        <Route path="/practice-type-selection" element={<Layout><PracticeTypeSelection /></Layout>} />
         <Route path="/chatpage" element={<Layout><Chatbot /></Layout>} />
         <Route path='/login-singup' element={<Layout><LoginSignupPage /></Layout>} />
         <Route path='/pricing' element={<Layout><Pricing /></Layout>} />
         <Route path='/about' element={<Layout><About /></Layout>} />
         <Route path='/learn' element={<Layout><Learn /></Layout>} />
+        <Route path='/speech' element={<Layout><Speech /></Layout>} />
       </Routes>
     </Router>
   );

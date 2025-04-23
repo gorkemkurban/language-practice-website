@@ -6,8 +6,8 @@ const LanguageSelection = () => {
   const navigate = useNavigate();
 
   const handleLanguageSelection = (language) => {
-    navigate(`/character-selection?language=${language}`);
-  };
+    navigate(`/practice-type-selection?language=${language}`);
+  };  
 
   return (
     <div className="language-selection-container">
