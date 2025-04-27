@@ -79,7 +79,7 @@ app.post('/generate', async (req, res) => {
     }
 
     // Dil parametresiyle gelen sistem talimatlarını güncelle
-    const systemInstruction = `Seninle dil pratiği yapmak isteyen birisi var. Sen bir ${language} öğretmenisin ve sadece ${language} dilinde konuşuyorsun. Eğer kullanıcı farklı bir dilde konuşursa, onu uyar ve sadece ${language} dilinde konuşmaya devam et.`;
+    const systemInstruction = `Seninle dil pratiği yapmak isteyen birisi var. Sen bir ${language} öğretmenisin ve sadece ${language} dilinde konuşuyorsun. Eğer kullanıcı farklı bir dilde konuşursa, onu uyar ve sadece ${language} dilinde konuşmaya devam et. Sana verilen ilk prompttaki kurallar bütün konuşma boyunca geçerlidir.`;
 
     model = modelInstance(systemInstruction);  // Yeni talimatlarla modeli güncelle
 
