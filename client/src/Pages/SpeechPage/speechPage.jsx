@@ -1,36 +1,73 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import './speechPage.css';
+
+// Konuşma için makul bir maksimum süre (milisaniye cinsinden)
+// Bu süreden sonra konuşma bitmemişse bile butonu aktif hale getirir.
+const MAX_SPEECH_DURATION = 30000; // 30 saniye
 
 const SpeechPage = () => {
   const [listening, setListening] = useState(false);
   const [speaking, setSpeaking] = useState(false);
   const [userInput, setUserInput] = useState('');
   const [geminiResponse, setGeminiResponse] = useState('');
-  const [language, setLanguage] = useState(''); // Dil bilgisi
+  const [language, setLanguage] = useState('');
+  const [languageCode, setLanguageCode] = useState('en-US');
+  const [isMounted, setIsMounted] = useState(false);
 
   const recognitionRef = useRef(null);
-
-  // URL parametrelerini almak için useLocation kullanılıyor
+  // Konuşma zaman aşımını takip etmek için ref
+  const speakingTimeoutRef = useRef(null);
   const location = useLocation();
 
+  // --- (Dil ayarları ve Recognition useEffect kancaları öncekiyle aynı) ---
+  // URL'den dil alıp state'leri ayarlayan useEffect
   useEffect(() => {
-    // URL'den dil parametresini almak
+    setIsMounted(true);
     const queryParams = new URLSearchParams(location.search);
-    const lang = queryParams.get('language');
+    const langParam = queryParams.get('language');
+    let selectedLang = 'English';
+    let selectedLangCode = 'en-US';
 
-    console.log("Dil parametresi URL'den alındı:", lang);  // URL parametresini kontrol et
+    console.log("URL'den alınan dil parametresi:", langParam);
 
-    // Dil parametresini setle
-    setLanguage(lang);  // Dil bilgisi state'e aktarılıyor
-
-    // Eğer dil parametresi eksikse, varsayılan dil olarak 'en-US' kullanıyoruz
-    if (!lang) {
-      console.log("Dil parametresi eksik, varsayılan dil 'en-US' kullanılacak.");
-      setLanguage('en-US');  // Varsayılan dil
+    if (langParam) {
+       if (langParam.toLowerCase() === 'french') {
+         selectedLang = 'French';
+         selectedLangCode = 'fr-FR';
+       } else if (langParam.toLowerCase() === 'english') {
+         selectedLang = 'English';
+         selectedLangCode = 'en-US';
+       } else {
+          console.warn(`Desteklenmeyen dil parametresi: ${langParam}. İngilizce varsayılan olarak ayarlandı.`);
+          alert(`Seçilen dil (${langParam}) desteklenmiyor. Varsayılan dil olarak İngilizce seçildi.`);
+       }
+    } else {
+      console.log("Dil parametresi URL'de bulunamadı. Varsayılan dil 'en-US' kullanılacak.");
       alert('Dil seçimi yapılmadı, varsayılan dil olarak İngilizce seçildi.');
-      return;
     }
+
+    setLanguage(selectedLang);
+    setLanguageCode(selectedLangCode);
+
+    // Bileşen kaldırıldığında temizlik
+    return () => {
+      setIsMounted(false);
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+      window.speechSynthesis.cancel();
+      // Zaman aşımını temizle
+      if (speakingTimeoutRef.current) {
+        clearTimeout(speakingTimeoutRef.current);
+        console.log("Speaking timeout cleared on unmount.");
+      }
+    };
+  }, [location]);
+
+  // Speech Recognition API'sini ayarlayan useEffect
+  useEffect(() => {
+    if (!isMounted || !languageCode) return;
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -39,104 +76,191 @@ const SpeechPage = () => {
     }
 
     const recognition = new SpeechRecognition();
-    // Dil ayarlarını kontrol et ve doğru olarak ayarla
-    recognition.lang = lang === 'French' ? 'fr-FR' : 'en-US';  // Default 'en-US' dilini kullan
+    recognition.lang = languageCode;
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
 
-    recognition.onstart = () => setListening(true);
-    recognition.onend = () => setListening(false);
-
+    recognition.onstart = () => { console.log("Listening started..."); setListening(true); };
+    recognition.onend = () => { console.log("Listening ended."); setListening(false); };
+    recognition.onerror = (event) => { console.error('Speech recognition error:', event.error); setListening(false); };
     recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;
+      console.log("Transcript received:", transcript);
       setUserInput(transcript);
-      handleUserSpeech(transcript);  // Kullanıcının sesli girdisini işleme
+      handleUserSpeech(transcript);
     };
 
     recognitionRef.current = recognition;
-  }, [location]); // location değiştiğinde yeniden çalışacak
 
-  useEffect(() => {
-    if (language) {
-      console.log("handleUserSpeech çağrılacak. Dil parametresi:", language);
-      // Dil parametresi geldiğinde handleUserSpeech çağrılıyor
-      handleUserSpeech(userInput);
+  }, [languageCode, isMounted]); // handleUserSpeech'i bağımlılıktan çıkardık
+
+  // Kullanıcının konuşmasını işleyen fonksiyon (useCallback ile)
+  const handleUserSpeech = useCallback(async (text) => {
+    if (!text || speaking) {
+      console.log("Skipping handleUserSpeech:", { text, speaking });
+      return;
     }
-  }, [language, userInput]);  // language ve userInput değiştiğinde çalışacak
-
-  const handleUserSpeech = async (text) => {
-    console.log("handleUserSpeech çağrıldı. Dil parametresi:", language);
-
-    // Dil parametresi eksikse bir hata mesajı verelim
-    if (!language) {
-      console.error("Dil parametresi eksik!");
+    if (!language || !languageCode) {
+      console.error("Dil bilgisi eksik! İşlem yapılamıyor.");
+      alert("Dil ayarları eksik, lütfen sayfayı yenileyin.");
       return;
     }
 
-    setSpeaking(true); // AI yanıt veriyor, UI'yi güncelle
-    const responseText = await getGeminiResponse(text);
-    setGeminiResponse(responseText);  // Gelen AI cevabını state'e kaydediyoruz
-    speakResponse(responseText);  // Sesli yanıt verme işlemi
-  };
+    console.log("Handling user speech:", text, "Language:", language);
+    setSpeaking(true); // AI konuşmaya BAŞLAYACAK
 
+    // Önceki zaman aşımını temizle (nadiren gerekli ama güvenli)
+    if (speakingTimeoutRef.current) {
+        clearTimeout(speakingTimeoutRef.current);
+    }
+
+    try {
+      const responseText = await getGeminiResponse(text);
+      setGeminiResponse(responseText);
+      speakResponse(responseText); // Seslendirme işlemi burada başlıyor
+    } catch (error) {
+      console.error("Error getting or speaking Gemini response:", error);
+      alert("Yapay zekadan yanıt alınırken bir hata oluştu.");
+      // Hata durumunda da zaman aşımını temizle ve butonu aktif et
+       if (speakingTimeoutRef.current) {
+           clearTimeout(speakingTimeoutRef.current);
+       }
+      setSpeaking(false);
+    }
+  }, [language, languageCode, speaking]); // Bağımlılıkları kontrol et
+
+  // Dinlemeyi başlatan fonksiyon
   const startListening = () => {
-    if (recognitionRef.current && !listening) {
-      recognitionRef.current.start();
+    if (recognitionRef.current && !listening && !speaking) {
+      try {
+        recognitionRef.current.start();
+      } catch (error) {
+        console.error("Error starting recognition:", error);
+        setListening(false);
+      }
+    } else {
+        console.log("Cannot start listening:", { hasRef: !!recognitionRef.current, listening, speaking });
     }
   };
 
-  const getGeminiResponse = async (userInput) => {
-    console.log("İstek gönderiliyor:", {
-      language: language,
-      prompt: userInput
-    });
-    
-    // language kontrolü ekledik
-    if (!language) {
-      alert("Dil parametresi eksik, işlem yapılamaz!");
-      return;
-    }
-
-    const response = await fetch('http://localhost:5000/generate', {  // Backend portunu değiştirdik
+  // Backend'e istek gönderip AI cevabını alan fonksiyon (öncekiyle aynı)
+  const getGeminiResponse = async (userInputText) => {
+    console.log("Sending request to Gemini:", { language, prompt: userInputText });
+    const response = await fetch('http://localhost:5000/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        language: language,  // Dil parametresini gönderiyoruz
-        character: 'Teacher', // Varsayılan karakter olarak Teacher belirledim (karakter seçimi yok)
-        prompt: userInput
+        language: language,
+        character: 'Teacher',
+        prompt: userInputText
       }),
     });
 
+    if (!response.ok) {
+        const errorData = await response.text();
+        console.error("Error response from server:", response.status, errorData);
+        throw new Error(`Server error: ${response.status} - ${errorData}`);
+    }
     const data = await response.json();
-    return data.text;  // Backend'den dönen yanıtı alıyoruz
+    console.log("Received response from Gemini:", data.text);
+    return data.text || "Üzgünüm, bir cevap oluşturamadım.";
   };
 
-  // Kullanıcıya AI cevabını sesli olarak iletme
+  // Verilen metni seslendiren fonksiyon (ZAMAN AŞIMI EKLEMESİYLE)
   const speakResponse = (responseText) => {
+    if (!('speechSynthesis' in window) || !responseText) {
+        console.warn("Speech synthesis not supported or response text is empty.");
+        setSpeaking(false);
+        return;
+    }
+
+    window.speechSynthesis.cancel(); // Önceki konuşmaları temizle
+
     const utterance = new SpeechSynthesisUtterance(responseText);
-    utterance.lang = language === 'French' ? 'fr-FR' : 'en-US';  // Yanıt diline göre ayar
+    utterance.lang = languageCode;
+
+    // ÖNEMLİ: Zaman aşımı temizleme fonksiyonu
+    const clearSpeakingTimeout = () => {
+        if (speakingTimeoutRef.current) {
+            console.log("Clearing speaking timeout.");
+            clearTimeout(speakingTimeoutRef.current);
+            speakingTimeoutRef.current = null; // Ref'i temizle
+        }
+    }
+
+    // Konuşma bittiğinde
     utterance.onend = () => {
-      setSpeaking(false);  // Konuşma bittiğinde speaking state'ini false yapıyoruz
-      recognitionRef.current.start(); // Konuşma bitince mikrofonu yeniden başlatıyoruz
+      console.log("AI speech finished (onend event).");
+      clearSpeakingTimeout(); // Zaman aşımını iptal et
+      if (isMounted) {
+        setSpeaking(false); // Butonu aktif et
+      }
     };
-    window.speechSynthesis.speak(utterance);  // Yanıtı sesli okuma
+
+    // Konuşma hatası olduğunda
+    utterance.onerror = (event) => {
+      console.error("SpeechSynthesisUtterance error:", event.error);
+      clearSpeakingTimeout(); // Zaman aşımını iptal et
+      if (isMounted) {
+        setSpeaking(false); // Butonu aktif et
+      }
+    };
+
+    // Konuşmayı başlat
+    console.log("Speaking response:", responseText, "with lang:", languageCode);
+    window.speechSynthesis.speak(utterance);
+
+    // GÜVENLİK AĞI: Zaman Aşımını Ayarla
+    // Belirtilen süre içinde onend veya onerror tetiklenmezse, butonu zorla aktif et.
+    speakingTimeoutRef.current = setTimeout(() => {
+        console.warn(`Speaking timeout (${MAX_SPEECH_DURATION}ms) reached. Forcing speaking state to false.`);
+        if (isMounted) {
+            // Hâlâ konuşuyor olabilir, iptal etmeyi dene (isteğe bağlı)
+            // window.speechSynthesis.cancel();
+            setSpeaking(false); // Butonu aktif et
+        }
+    }, MAX_SPEECH_DURATION); // 30 saniye sonra çalışacak
+
   };
 
+    // Gemini konuşmasını durduran fonksiyon (önceki yanıttan eklendi)
+    const stopSpeaking = useCallback(() => {
+        console.log("Stopping speaking...");
+        window.speechSynthesis.cancel(); // Konuşmayı iptal et
+        if (speakingTimeoutRef.current) {
+            clearTimeout(speakingTimeoutRef.current);
+            speakingTimeoutRef.current = null;
+             console.log("Speaking timeout cleared by stopSpeaking.");
+        }
+        if (isMounted) {
+            setSpeaking(false); // AI'ın konuşma durumunu false yap
+        }
+        console.log("Speaking stopped. Button should be active.");
+   }, [isMounted]);
+
+  // Arayüz (JSX)
   return (
     <div className="speech-container">
       <div
         className={`mic-circle ${listening ? 'listening' : ''} ${speaking ? 'speaking' : ''}`}
         onClick={startListening}
-        style={{ pointerEvents: speaking ? 'none' : 'auto' }} // speaking durumunda butonu pasif hale getirdik
+        style={{ pointerEvents: listening || speaking ? 'none' : 'auto', cursor: listening || speaking ? 'not-allowed' : 'pointer' }}
+        title={listening ? "Dinleniyor..." : (speaking ? "Yapay zeka konuşuyor..." : "Konuşmak için tıklayın")}
       >
         🎤
       </div>
+
+       {/* Gemini konuşurken durdur butonu görünür - Önceki yanıttan eklendi */}
+       {speaking && (
+           <button onClick={stopSpeaking} className="stop-button">
+               Durdur ⏹️
+           </button>
+       )}
+
       <p className="instruction-text">
-        {speaking ? 'Listen...' : 'You can talk'} {/* Burada metni güncelliyoruz */}
+        {listening ? "Dinleniyor..." : (!speaking && "Mikrofona tıklayarak konuşmaya başlayın")}
+        {/* Buradaki koşul güncellendi: Sadece dinleniyorsa veya konuşma yoksa talimat gösterilir */}
       </p>
-      {/* Ekranda kullanıcı girdiği ve AI cevabını gösteren kısımlar kaldırıldı */}
-      {console.log(`You said: ${userInput}`)} {/* Kullanıcının söylediği */}
-      {console.log(`AI says: ${geminiResponse}`)} {/* AI'nın cevabı */}
     </div>
   );
 };

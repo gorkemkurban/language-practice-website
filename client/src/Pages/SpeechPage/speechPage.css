@@ -63,3 +63,8 @@
     font-size: 18px;
     color: #cbd5e1;
   }
+
+  .stop-button{
+    width: 25%;
+    margin-top: 50px;
+  }
